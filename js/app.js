@@ -1,43 +1,26 @@
-var initialCats = [
+var locations = [
     {
-        clickCount: 0,
-        name: 'Tabby',
-        imgSrc: 'https://i.pinimg.com/736x/6c/58/09/6c5809e816c53b3f0dc02dd1e2009a7e--tabby-kittens-for-sale-kitten-for-sale.jpg',
-        imgAttribution: 'https://www.pinterest.ca/explore/tabby-kittens-for-sale/',
-        nicknames: ['Hob', 'Boss', 'Mimsy', 'Power Town']
+        position: {lat: -31.563910, lng: 147.154312},
+        label: 'A'
     },
     {
-        clickCount: 0,
-        name: 'Happy',
-        imgSrc: 'https://i.pinimg.com/736x/6c/58/09/6c5809e816c53b3f0dc02dd1e2009a7e--tabby-kittens-for-sale-kitten-for-sale.jpg',
-        imgAttribution: 'https://www.pinterest.ca/explore/tabby-kittens-for-sale/',
-        nicknames: ['Hob', 'Boss', 'Mimsy', 'Power Town']
+        position: {lat: -33.718234, lng: 150.363181},
+        label: 'B'
     },
     {
-        clickCount: 0,
-        name: 'Piggy',
-        imgSrc: 'https://i.pinimg.com/736x/6c/58/09/6c5809e816c53b3f0dc02dd1e2009a7e--tabby-kittens-for-sale-kitten-for-sale.jpg',
-        imgAttribution: 'https://www.pinterest.ca/explore/tabby-kittens-for-sale/',
-        nicknames: ['Hob', 'Boss', 'Mimsy', 'Power Town']
+        position: {lat: -33.727111, lng: 150.371124},
+        label: 'C'
     },
     {
-        clickCount: 0,
-        name: 'Flabby',
-        imgSrc: 'https://i.pinimg.com/736x/6c/58/09/6c5809e816c53b3f0dc02dd1e2009a7e--tabby-kittens-for-sale-kitten-for-sale.jpg',
-        imgAttribution: 'https://www.pinterest.ca/explore/tabby-kittens-for-sale/',
-        nicknames: ['Hob', 'Boss', 'Mimsy', 'Power Town']
+        position: {lat: -33.848588, lng: 151.209834},
+        label: 'D'
     },
     {
-        clickCount: 0,
-        name: 'Sappy',
-        imgSrc: 'https://i.pinimg.com/736x/6c/58/09/6c5809e816c53b3f0dc02dd1e2009a7e--tabby-kittens-for-sale-kitten-for-sale.jpg',
-        imgAttribution: 'https://www.pinterest.ca/explore/tabby-kittens-for-sale/',
-        nicknames: ['Hob', 'Boss', 'Mimsy', 'Power Town']
+        position: {lat: -33.851702, lng: 151.216968},
+        label: 'E'
     },
-    
-
 ];
-
+/*
 var Cat = function(data) {
     this.clickCount = ko.observable(data.clickCount);
     this.name = ko.observable(data.name);
@@ -82,3 +65,5 @@ var ViewModel = function() {
 }
 
 ko.applyBindings(new ViewModel());
+
+*/
