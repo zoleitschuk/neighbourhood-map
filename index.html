@@ -13,32 +13,20 @@
 
 <body>
     <nav class="navbar navbar-light bg-faded">
-        <a class="navbar-brand" href="#">
-            <img src="/assets/brand/bootstrap-solid.svg" width="30" height="30" class="d-inline-block align-top" alt=""> Bootstrap
-        </a>
+        <a class="navbar-brand" href="#">Neighbourhood Map</a>
     </nav>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
-                <ul class="nav nav-pills flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Overview
-                            <span class="sr-only">(current)</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Reports</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Analytics</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Export</a>
-                    </li>
-                </ul>
+            <div class="col-sm-3 col-md-3 bg-faded">
+                    <ul data-bind="foreach: points">
+                            <li>
+                                <span data-bind="text: label"></span>: 
+                                <span data-bind="text: name"></span>
+                            </li>
+                        </ul>
             </div>
 
-            <main id="map-container" class="col-sm-9 col-md-10">
+            <main id="map-container" class="col-sm-9 col-md-9">
                 <div id="map"></div>
             </main>
         </div>
@@ -46,37 +34,8 @@
 
     <script src="node_modules/knockout/build/output/knockout-latest.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/initMap.js"></script>
 
-    <script>
-        function initMap() {
-            var uluru = { lat: -25.363, lng: 131.044 };
-
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 4,
-                center: uluru
-            });
-
-            var infoWindow = new google.maps.InfoWindow;
-
-            var markers = locations.map(function(location) {
-
-                var marker = new google.maps.Marker({
-                    position: location.position,
-                    label: location.label,
-                    map: map
-                });
-
-                google.maps.event.addListener(marker, 'click', (function(marker) {
-                    return function() {
-                        infoWindow.setContent('Hello World');
-                        infoWindow.open(map, marker);
-                    }
-                })(marker));
-
-                return marker;
-            });
-        }
-    </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDyJhTYVTx_KGSvXvZBmRXo8yswkNKTn-s&callback=initMap">
     </script>
 
