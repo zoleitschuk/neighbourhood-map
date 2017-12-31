@@ -1,9 +1,33 @@
-var initMap = function() {
-    var uluru = { lat: -25.363, lng: 131.044 };
+var findCenter = function() {
+    let self = this;
 
+    this.sumLat = 0;
+    this.sumLng = 0;
+
+    // Handle case where data is an empty array (i.e. data.length = 0).
+    this.pointsCount = data.length || 1;
+
+    data.forEach(function(dataPoint) {
+        self.sumLat = self.sumLat + dataPoint.position.lat;
+        self.sumLng = self.sumLng + dataPoint.position.lng;
+    });
+
+    // Center point will be the average value of the latitudes and longitudes.
+    return {
+        lat: this.sumLat / this.pointsCount,
+        lng: this.sumLng / this.pointsCount
+    };
+}
+
+var findZoom = function() {
+    let zoom = 10;
+    return zoom;
+}
+
+var initMap = function() {
     var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 4,
-        center: uluru
+        zoom: findZoom(),
+        center: findCenter()
     });
 
     var infoWindow = new google.maps.InfoWindow;

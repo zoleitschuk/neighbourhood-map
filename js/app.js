@@ -1,27 +1,27 @@
 var data = [
     {
         name: 'Crossfit Currie Barracks',
-        position: {lat: -31.563910, lng: 147.154312},
+        position: {lat: 51.017651, lng: -114.120027},
         label: 'A'
     },
     {
         name: 'The Nash',
-        position: {lat: -33.718234, lng: 150.363181},
+        position: {lat: 51.041771, lng: -114.037000},
         label: 'B'
     },
     {
         name: 'Good Earth',
-        position: {lat: -33.727111, lng: 150.371124},
+        position: {lat: 51.039322, lng: -114.088990},
         label: 'C'
     },
     {
         name: 'Market Collective',
-        position: {lat: -33.848588, lng: 151.209834},
+        position: {lat: 51.039392, lng: -114.035213},
         label: 'D'
     },
     {
         name: 'Crossfit Sunalta',
-        position: {lat: -33.851702, lng: 151.216968},
+        position: {lat: 51.044035, lng: -114.099481},
         label: 'E'
     },
 ];
@@ -34,11 +34,26 @@ var PointOfInterest = function(dataPoint) {
 var ViewModel = function() {
     var self = this;
 
-    self.points = ko.observableArray([]);
+    this.points = ko.observableArray([]);
+    this.query = ko.observable('');
+    this.filteredPoints = ko.computed(function() {
+        let filter = self.query().toLowerCase();
+        if(!filter) {
+            return self.points();
+        } else {
+            return ko.utils.arrayFilter(self.points(), function(item) {
+                return item.name().toLowerCase().indexOf(filter) !== -1;
+            });
+        }
+    });
 
     data.forEach(function(dataPoint) {
         self.points.push(new PointOfInterest(dataPoint));
     });
+
+    this.setPoint = function() {
+        console.log(this.name());
+    };
 }
 
 ko.applyBindings(new ViewModel());

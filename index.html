@@ -18,12 +18,10 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-3 col-md-3 bg-faded">
-                    <ul data-bind="foreach: points">
-                            <li>
-                                <span data-bind="text: label"></span>: 
-                                <span data-bind="text: name"></span>
-                            </li>
-                        </ul>
+                <input type="search" class="form-control" data-bind="textInput: query" autocomplete="off" />
+                <ul data-bind="foreach: filteredPoints">
+                    <li data-bind="text: name, click: $parent.setPoint"></li>
+                </ul>
             </div>
 
             <main id="map-container" class="col-sm-9 col-md-9">
