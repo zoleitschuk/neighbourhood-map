@@ -24,6 +24,11 @@ var data = [
         position: {lat: 51.044035, lng: -114.099481},
         label: 'E'
     },
+    {
+        name: 'Higher Ground',
+        position: {lat: 51.052621, lng: -114.087765},
+        label: 'F'
+    },
 ];
 
 var PointOfInterest = function(dataPoint) {
