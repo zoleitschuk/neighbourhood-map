@@ -3,8 +3,17 @@ html, body {
     width: 100%;
 }
 
+#header {
+    height: 10%;
+}
+
+#page-content {
+    height: 90%;
+}
+
 #sidebar {
-    background-color: rgb(167, 132, 132);
+    height: 100%;
+    background-color: darkgray;
 }
 
 #map {

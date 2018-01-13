@@ -20,7 +20,7 @@ var findCenter = function() {
 }
 
 var findZoom = function() {
-    let zoom = 13;
+    let zoom = 12;
     return zoom;
 }
 
@@ -31,7 +31,7 @@ var getHeatMapData = function() {
         mode: 'url',
         ne: '51.149633,-113.923759',
         sw: '50.901301,-114.310341',
-        query: 'coffee',
+        query: 'sushi', // Query does not seem to be working.
         client_id: '53YSEWRJUR3R0MVJ4AB1Y54Y1UEBQLYVWIVMVQC1PN2G2M3A',
         client_secret: 'BT2FCLFH0QBC1S20UU3L1NI1SFL04RJ1SWQ4WBXJFLWG432I',
         version: '20180113',
@@ -74,7 +74,6 @@ var initMap = function() {
         data: getHeatMapData(),
         map: map
     });
-    console.log(heatmap.data);
 
     var infoWindow = new google.maps.InfoWindow;
 
