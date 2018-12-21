@@ -12,12 +12,15 @@
 </head>
 
 <body class="container-fluid">
-    <header id="header" class="row">Neighbourhood Map</header>
+    <nav class="navbar">
+        <div class="navbar-header">Neighbourhood Map</div>
+    </nav>
     <div id="page-content" class="row">
         <div id="sidebar" class="col-sm-3 col-md-3 bg-faded">
-            <input type="search" class="form-control" data-bind="textInput: query" autocomplete="off" />
-            <div data-bind="foreach: filteredPoints">
-                <div data-bind="text: name, click: $parent.setPoint"></div>
+            <input type="search" class="form-control searchbar row" data-bind="textInput: query" autocomplete="off" />
+            <hr class="row">
+            <div id="point-container" data-bind="foreach: filteredPoints">
+                <div class="point-of-interest" data-bind="text: name, click: $parent.setPoint"></div>
             </div>
         </div>
 
@@ -30,7 +33,7 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
         crossorigin="anonymous"></script>
     <script src="js/app.js"></script>
-    <script src="js/initMap.js"></script>
+    <script async defer src="js/initMap.js"></script>
 
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDyJhTYVTx_KGSvXvZBmRXo8yswkNKTn-s&callback=initMap&libraries=visualization">
     </script>

@@ -34,6 +34,7 @@ var data = [
 var PointOfInterest = function(dataPoint) {
     this.label = ko.observable(dataPoint.label);
     this.name = ko.observable(dataPoint.name);
+    this.marker = ko.observable(dataPoint.marker);
 }
 
 var ViewModel = function() {
@@ -61,4 +62,6 @@ var ViewModel = function() {
     };
 }
 
-ko.applyBindings(new ViewModel());
+my = {viewModel: new ViewModel()};
+
+ko.applyBindings(my.viewModel);

@@ -1,10 +1,21 @@
 html, body {
     height: 100%;
     width: 100%;
+    background-color: lightseagreen;
 }
 
-#header {
-    height: 10%;
+hr {
+    margin: 0px;
+}
+
+.searchbar {
+    margin: 2.5%;
+    width: 95%;
+}
+
+.point-of-interest {
+    padding: 2.5%;
+    border-bottom: 1px solid rgba(0,0,0,.1)
 }
 
 #page-content {
@@ -13,7 +24,13 @@ html, body {
 
 #sidebar {
     height: 100%;
-    background-color: darkgray;
+    padding: 0px;
+    overflow: hidden;
+}
+
+#point-container {
+    height: 90%;
+    overflow: auto;
 }
 
 #map {

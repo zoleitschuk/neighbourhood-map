@@ -75,7 +75,29 @@ var initMap = function() {
         map: map
     });
 
+    heatmap.setMap(map);
+
     var infoWindow = new google.maps.InfoWindow;
+
+    console.log(my.viewModel.points());
+
+    my.viewModel.points().forEach(function(dataPoint){
+        var marker = new google.maps.Marker({
+            name: dataPoint.name(),
+            position: dataPoint.position,
+            label: dataPoint.label(),
+            map: map
+        });
+        google.maps.event.addListener(marker, 'click', (function(marker) {
+            return function() {
+                infoWindow.setContent(marker.label + ': ' + marker.name);
+                infoWindow.open(map, marker);
+                //TODO: marker animation.
+                toggleMarkerBounce(marker);
+            }
+        })(marker));
+        dataPoint.marker = marker;
+    });
 
     var markers = data.map(function(dataPoint) {
 
@@ -90,12 +112,26 @@ var initMap = function() {
             return function() {
                 infoWindow.setContent(marker.label + ': ' + marker.name);
                 infoWindow.open(map, marker);
+                //TODO: marker animation.
+                toggleMarkerBounce(marker);
             }
         })(marker));
 
         return marker;
     });
 }
-function toggleHeatmap() {
-    heatmap.setMap(heatmap.getMap() ? null : map);
+
+var toggleHeatmap = function() {
+    heatmap.setMap(heatmap.getMap() ? map : map);
   }
+
+var toggleMarkerBounce = function(marker) {
+    let currentMarker = marker;
+
+    currentMarker.setAnimation(google.maps.Animation.BOUNCE);
+
+    // Stop bounce animation after 1 second.
+    window.setTimeout(function(){
+        currentMarker.setAnimation(null);
+    }, 500);
+}
