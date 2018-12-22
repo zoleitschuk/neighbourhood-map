@@ -86,7 +86,6 @@ var initMap = function() {
                 return function() {
                     infoWindow.setContent(marker.label + ': ' + marker.name);
                     infoWindow.open(map, marker);
-                    //TODO: marker animation.
                     toggleMarkerBounce(marker);
                 }
             })(marker));
@@ -99,53 +98,72 @@ var initMap = function() {
         map: map
     });
 
-    //heatmap.setMap(map);
-    toggleHeatmap();
+    //delayed trigger of heatmap to wait for map to load
+    setTimeout(function(){
+        toggleHeatmap();
+    }, 1000);
 }
 
 var getHeatMapData = function() {
     let heatMapData = [];
 
+    // Foursquare categories:
+        // coffeeshop - 4bf58dd8d48988d1e0931735
+        // climbing gym - 4bf58dd8d48988d1e0931735
+        // yoga studio - 4bf58dd8d48988d102941735
+        // dog run - 4bf58dd8d48988d1e5941735
+        // roof deck - 4bf58dd8d48988d133951735
+        // book store - 4bf58dd8d48988d114951735
     foursquareParams = {
         mode: 'url',
+        intent: 'browse',
         ne: '51.149633,-113.923759',
         sw: '50.901301,-114.310341',
-        query: 'coffee', // Query does not seem to be working.
+        categoryIds: ['4bf58dd8d48988d1e0931735',
+            '4bf58dd8d48988d1e0931735',
+            '4bf58dd8d48988d102941735',
+            '4bf58dd8d48988d1e5941735',
+            '4bf58dd8d48988d114951735',
+        ],
         client_id: '53YSEWRJUR3R0MVJ4AB1Y54Y1UEBQLYVWIVMVQC1PN2G2M3A',
         client_secret: 'BT2FCLFH0QBC1S20UU3L1NI1SFL04RJ1SWQ4WBXJFLWG432I',
+        limit: '50',
         version: '20180113',
-    }
-    
-    let endPoint = 'https://api.foursquare.com/v2/venues/explore?' +
-        'mode=' + foursquareParams.mode +
-        '&ne=' + foursquareParams.ne +
-        '&sw=' + foursquareParams.sw +
-        '&q=' + foursquareParams.query +
-        '&client_id=' + foursquareParams.client_id +
-        '&client_secret=' + foursquareParams.client_secret +
-        '&v=' + foursquareParams.version;
-    
-    $.getJSON(endPoint, function(data) {
-        data.response.groups[0].items.forEach(item => {
-            let hotSpotLat = item.venue.location.lat;
-            let hotSpotLng = item.venue.location.lng;
-            let rating = item.venue.rating || 1;
-            let hotSpot = {
-                location: new google.maps.LatLng(hotSpotLat, hotSpotLng),
-                weight: rating,
-            };
-    
-            heatMapData.push(hotSpot);
+    };
+
+    // loop through all foursquareParams.categoryIds to make API call on each
+    for(i=0; i<foursquareParams.categoryIds.length;i++){
+        let endPoint = 'https://api.foursquare.com/v2/venues/search?' +
+            'intent=' + foursquareParams.intent +
+            '&ne=' + foursquareParams.ne +
+            '&sw=' + foursquareParams.sw +
+            '&categoryId=' + foursquareParams.categoryIds[i] +
+            '&limit=' + foursquareParams.limit +
+            '&client_id=' + foursquareParams.client_id +
+            '&client_secret=' + foursquareParams.client_secret +
+            '&v=' + foursquareParams.version;
+        
+        $.getJSON(endPoint, function(data) {
+            data.response.venues.forEach(venue => {
+                let hotSpotLat = venue.location.lat;
+                let hotSpotLng = venue.location.lng;
+                let weight = venue.rating || 1;
+                let hotSpot = {
+                    location: new google.maps.LatLng(hotSpotLat, hotSpotLng),
+                    weight: weight,
+                };
+                heatMapData.push(hotSpot);
+            });
         });
-    });
+    }   // end api query loop
     return heatMapData;
 }
 
 
 var toggleHeatmap = function() {
     heatmap.setMap(heatmap.getMap() ? map : map);
-    //set radius of heatmap points to 30px
-    heatmap.set('radius', heatmap.get('radius') ? null : 30);
+    //set radius of heatmap points to 15px
+    heatmap.set('radius', heatmap.get('radius') ? null : 15);
   }
 
 var toggleMarkerBounce = function(marker) {
@@ -156,7 +174,7 @@ var toggleMarkerBounce = function(marker) {
     // Stop bounce animation after 1 second.
     window.setTimeout(function(){
         currentMarker.setAnimation(null);
-    }, 500);
+    }, 1000);
 }
 
 var PointOfInterest = function(dataPoint) {
