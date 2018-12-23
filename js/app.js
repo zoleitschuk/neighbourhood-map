@@ -84,7 +84,7 @@ var initMap = function() {
             viewModel.points()[i].marker = marker;
             google.maps.event.addListener(marker, 'click', (function(marker) {
                 return function() {
-                    infoWindow.setContent(marker.label + ': ' + marker.name);
+                    infoWindow.setContent(getLocationDetails(marker));
                     infoWindow.open(map, marker);
                     toggleMarkerBounce(marker);
                 }
@@ -102,6 +102,45 @@ var initMap = function() {
     setTimeout(function(){
         toggleHeatmap();
     }, 1000);
+}
+
+let foursquareAuth = {
+    client_id: '53YSEWRJUR3R0MVJ4AB1Y54Y1UEBQLYVWIVMVQC1PN2G2M3A',
+    client_secret: 'BT2FCLFH0QBC1S20UU3L1NI1SFL04RJ1SWQ4WBXJFLWG432I',
+    version: '20180113',
+}
+
+var getLocationDetails = function(marker) {
+    foursquareDetailParam = {
+        intent: 'match',
+        ll: marker.getPosition().lat() + ',' + marker.getPosition().lng(),
+        name: marker.name,
+        client_id: foursquareAuth.client_id,
+        client_secret: foursquareAuth.client_secret,
+        v: foursquareAuth.version,
+    };
+
+    $.ajax({
+        url: 'https://api.foursquare.com/v2/venues/search?',
+        dataType: 'json',
+        async: false,
+        data: foursquareDetailParam,
+        success: function(data){
+            locationDetails = getVenueInfoContent(data.response.venues[0]);
+        },
+        error: function() {
+            locationDetails = '<div>Connection to Foursquare API failed. Please try again later.</div>';
+        }
+    })
+    return locationDetails;
+}
+
+var getVenueInfoContent = function(venue){
+    var content = '<div>' + venue.name + '</div>' +
+        '<div>' + venue.location.formattedAddress[0] + '</div>' +
+        '<div>' + venue.location.formattedAddress[1] + '</div>' +
+        '<div>' + venue.location.formattedAddress[2] + '</div>';
+    return content;
 }
 
 var getHeatMapData = function() {
@@ -125,10 +164,10 @@ var getHeatMapData = function() {
             '4bf58dd8d48988d1e5941735',
             '4bf58dd8d48988d114951735',
         ],
-        client_id: '53YSEWRJUR3R0MVJ4AB1Y54Y1UEBQLYVWIVMVQC1PN2G2M3A',
-        client_secret: 'BT2FCLFH0QBC1S20UU3L1NI1SFL04RJ1SWQ4WBXJFLWG432I',
         limit: '50',
-        version: '20180113',
+        client_id: foursquareAuth.client_id,
+        client_secret: foursquareAuth.client_secret,
+        version: foursquareAuth.version,
     };
 
     // loop through all foursquareParams.categoryIds to make API call on each
@@ -154,6 +193,9 @@ var getHeatMapData = function() {
                 };
                 heatMapData.push(hotSpot);
             });
+        })
+        .fail(function(){
+            console.log('heatmap connection failed');
         });
     }   // end api query loop
     return heatMapData;
