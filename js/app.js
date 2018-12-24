@@ -84,24 +84,14 @@ var initMap = function() {
             viewModel.points()[i].marker = marker;
             google.maps.event.addListener(marker, 'click', (function(marker) {
                 return function() {
-                    infoWindow.setContent(getLocationDetails(marker));
-                    infoWindow.open(map, marker);
+                    populateInfoWindow(marker, infoWindow);
                     toggleMarkerBounce(marker);
                 }
             })(marker));
 
         })(i);
     }
-
-    heatmap = new google.maps.visualization.HeatmapLayer({
-        data: getHeatMapData(),
-        map: map
-    });
-
-    //delayed trigger of heatmap to wait for map to load
-    setTimeout(function(){
-        toggleHeatmap();
-    }, 1000);
+    getHeatMap();
 }
 
 let foursquareAuth = {
@@ -110,7 +100,7 @@ let foursquareAuth = {
     version: '20180113',
 }
 
-var getLocationDetails = function(marker) {
+var populateInfoWindow = function(marker, infoWindow) {
     foursquareDetailParam = {
         intent: 'match',
         ll: marker.getPosition().lat() + ',' + marker.getPosition().lng(),
@@ -123,16 +113,18 @@ var getLocationDetails = function(marker) {
     $.ajax({
         url: 'https://api.foursquare.com/v2/venues/search?',
         dataType: 'json',
-        async: false,
         data: foursquareDetailParam,
-        success: function(data){
-            locationDetails = getVenueInfoContent(data.response.venues[0]);
-        },
-        error: function() {
-            locationDetails = '<div>Connection to Foursquare API failed. Please try again later.</div>';
-        }
     })
-    return locationDetails;
+    .done(function(data){
+        locationDetails = getVenueInfoContent(data.response.venues[0]);
+        infoWindow.setContent(locationDetails);
+        infoWindow.open(map, marker);
+    })
+    .fail(function() {
+        locationDetails = '<div>Connection to Foursquare API failed. Please try again later.</div>';
+        infoWindow.setContent(locationDetails);
+        infoWindow.open(map, marker);
+    });
 }
 
 var getVenueInfoContent = function(venue){
@@ -143,46 +135,41 @@ var getVenueInfoContent = function(venue){
     return content;
 }
 
-var getHeatMapData = function() {
+var getHeatMap = function() {
     let heatMapData = [];
 
-    // Foursquare categories:
-        // coffeeshop - 4bf58dd8d48988d1e0931735
-        // climbing gym - 4bf58dd8d48988d1e0931735
-        // yoga studio - 4bf58dd8d48988d102941735
-        // dog run - 4bf58dd8d48988d1e5941735
-        // roof deck - 4bf58dd8d48988d133951735
-        // book store - 4bf58dd8d48988d114951735
-    foursquareParams = {
+    foursquareCategoryParam = {
         mode: 'url',
         intent: 'browse',
         ne: '51.149633,-113.923759',
         sw: '50.901301,-114.310341',
-        categoryIds: ['4bf58dd8d48988d1e0931735',
-            '4bf58dd8d48988d1e0931735',
-            '4bf58dd8d48988d102941735',
-            '4bf58dd8d48988d1e5941735',
-            '4bf58dd8d48988d114951735',
-        ],
+        categoryId: '',
         limit: '50',
         client_id: foursquareAuth.client_id,
         client_secret: foursquareAuth.client_secret,
-        version: foursquareAuth.version,
+        v: foursquareAuth.version,
     };
 
-    // loop through all foursquareParams.categoryIds to make API call on each
-    for(i=0; i<foursquareParams.categoryIds.length;i++){
-        let endPoint = 'https://api.foursquare.com/v2/venues/search?' +
-            'intent=' + foursquareParams.intent +
-            '&ne=' + foursquareParams.ne +
-            '&sw=' + foursquareParams.sw +
-            '&categoryId=' + foursquareParams.categoryIds[i] +
-            '&limit=' + foursquareParams.limit +
-            '&client_id=' + foursquareParams.client_id +
-            '&client_secret=' + foursquareParams.client_secret +
-            '&v=' + foursquareParams.version;
+    // Foursquare categories:
+    foursquareCategories = [
+        {name: 'coffee shop', id: '4bf58dd8d48988d1e0931735'},
+        {name: 'climbing gym', id: '4bf58dd8d48988d1e0931735'},
+        {name: 'yoga studio', id: '4bf58dd8d48988d102941735'},
+        {name: 'dog run', id: '4bf58dd8d48988d1e5941735'},
+        {name: 'roof deck', id: '4bf58dd8d48988d133951735'},
+        {name: 'book store', id: '4bf58dd8d48988d114951735'},
+    ];
+
+    // loop through all foursquareCategories to make API call on each
+    for(i=0; i<foursquareCategories.length;i++){
+        foursquareCategoryParam.categoryId = foursquareCategories[i].id;
         
-        $.getJSON(endPoint, function(data) {
+        $.ajax({
+            url: 'https://api.foursquare.com/v2/venues/search?',
+            dataType: 'json',
+            data: foursquareCategoryParam,
+        })
+        .done(function(data) {
             data.response.venues.forEach(venue => {
                 let hotSpotLat = venue.location.lat;
                 let hotSpotLng = venue.location.lng;
@@ -193,20 +180,19 @@ var getHeatMapData = function() {
                 };
                 heatMapData.push(hotSpot);
             });
+            var heatmap = new google.maps.visualization.HeatmapLayer({
+                data: heatMapData,
+                map: map
+            });
+            heatmap.setMap(heatmap.getMap() ? map : map);
+            //set radius of heatmap points to 15px
+            heatmap.set('radius', heatmap.get('radius') ? null : 15);
         })
         .fail(function(){
             console.log('heatmap connection failed');
         });
     }   // end api query loop
-    return heatMapData;
 }
-
-
-var toggleHeatmap = function() {
-    heatmap.setMap(heatmap.getMap() ? map : map);
-    //set radius of heatmap points to 15px
-    heatmap.set('radius', heatmap.get('radius') ? null : 15);
-  }
 
 var toggleMarkerBounce = function(marker) {
     let currentMarker = marker;
@@ -231,6 +217,7 @@ var ViewModel = function() {
 
     this.points = ko.observableArray([]);
     this.query = ko.observable('');
+    this.dropdown = ko.observable('');
 
     data.forEach(function(dataPoint) {
         let myPOI = new PointOfInterest(dataPoint);
@@ -238,7 +225,8 @@ var ViewModel = function() {
     });
 
     this.filteredPoints = ko.computed(function() {
-        let filter = self.query().toLowerCase();
+        // Use dropdown value as filter on points if selected, otherwise use value of query.
+        let filter = self.dropdown() ? self.dropdown().name.toLowerCase() : self.query().toLowerCase();
         for(i=0;i<self.points().length;i++){
             if(self.points()[i].name.toLowerCase().indexOf(filter)>-1) {
                 self.points()[i].show(true);
@@ -257,6 +245,11 @@ var ViewModel = function() {
 
     this.setPoint = function(points) {
         google.maps.event.trigger(points.marker, "click");
+    };
+
+    this.resetFilters = function() {
+        self.query('');
+        self.dropdown(null);
     };
 };
 

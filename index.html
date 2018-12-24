@@ -8,6 +8,7 @@
     <title>Neighbourhood Map</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
         crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous"> -->
     <link rel="stylesheet" href="styles/styles.css">
 </head>
 
@@ -19,6 +20,9 @@
         <div id="sidebar" class="col-sm-3 col-md-3 bg-faded">
             <input type="search" class="form-control searchbar row" data-bind="textInput: query" autocomplete="off" />
             <hr class="row">
+            <div class="alert alert-danger" data-bind="visible: dropdown, click: resetFilters">
+                <strong>Screen change detected. Click here to resolve.</strong>
+            </div>
             <div id="point-container" data-bind="foreach: points">
                 <div class="point-of-interest" data-bind="text: name, click: $parent.setPoint, visible: show"></div>
             </div>
@@ -27,6 +31,15 @@
         <main id="map-container" class="col-sm-9 col-md-9">
             <div id="map"></div>
         </main>
+        <div id="dropdown-select" class="col-sm-12 col-md-12">
+            <select class="form-control" id="location-dropdown"
+                data-bind="options: points,
+                    optionsCaption: 'All Locations',
+                    optionsText: 'name',
+                    value: dropdown
+                ">
+            </select>
+        </div>
     </div>
 
     <script src="node_modules/knockout/build/output/knockout-latest.js"></script>
@@ -36,7 +49,6 @@
 
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDyJhTYVTx_KGSvXvZBmRXo8yswkNKTn-s&callback=initMap&libraries=visualization">
     </script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
         crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"

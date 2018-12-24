@@ -26,6 +26,14 @@ hr {
     height: 100%;
     padding: 0px;
     overflow: hidden;
+    display: none;
+}
+
+
+#dropdown-select {
+    height: 10%;
+    padding: 0px;
+    display: block;
 }
 
 #point-container {
@@ -40,6 +48,24 @@ hr {
 }
 
 #map-container {
+    height: 90%;
     padding: 0px;
+}
+
+@media only screen and (min-width: 600px){
+    /* tablet and larger styling */
+    #sidebar {
+        display: block;
+    }
+
+    #dropdown-select {
+        display: none;
+    }
+
+    #map-container {
+        height: 100%;
+        padding: 0px;
+    }
+
 }
 
