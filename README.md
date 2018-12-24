@@ -29,11 +29,11 @@ Lastly, the heap map displays concentrations of coffee shops, climbing gyms, dog
 
 ## Built With
 
-* [knockout.js](http://flask.pocoo.org/) - JavaScript Framework
+* [Knockout](https://knockoutjs.com/) - JavaScript Framework for MVVC management.
 * [Google Maps](https://developers.google.com/maps/documentation/) - Googl Maps API
 * [FourSquare](https://developer.foursquare.com/docs/api) - 3rd Party API for providing additional location data
 * [Bootstrap](https://getbootstrap.com/docs/4.0/getting-started/introduction/) - Styling Framework
-* [jQuery] (http://api.jquery.com/jQuery/) - JavaScript Framework
+* [jQuery](http://api.jquery.com/jQuery/) - JavaScript Framework
 
 ## Authors
 
