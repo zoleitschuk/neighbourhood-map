@@ -1,6 +1,6 @@
 let viewModel;
 
-var data = [
+var DATA = [
     {
         name: 'Crossfit Currie Barracks',
         position: {lat: 51.017651, lng: -114.120027},
@@ -38,7 +38,7 @@ var map, heatmap;
 var markers = [];
 
 // Define global params for foursquare API authentication.
-let foursquareAuth = {
+let FOURSQUAREAUTH = {
     client_id: '53YSEWRJUR3R0MVJ4AB1Y54Y1UEBQLYVWIVMVQC1PN2G2M3A',
     client_secret: 'BT2FCLFH0QBC1S20UU3L1NI1SFL04RJ1SWQ4WBXJFLWG432I',
     version: '20180113',
@@ -58,10 +58,10 @@ var findCenter = function() {
     this.sumLat = 0;
     this.sumLng = 0;
 
-    // Handle case where data is an empty array (i.e. data.length = 0).
-    this.pointsCount = data.length || 1;
+    // Handle case where DATA is an empty array (i.e. DATA.length = 0).
+    this.pointsCount = DATA.length || 1;
 
-    data.forEach(function(dataPoint) {
+    DATA.forEach(function(dataPoint) {
         self.sumLat = self.sumLat + dataPoint.position.lat;
         self.sumLng = self.sumLng + dataPoint.position.lng;
     });
@@ -82,13 +82,13 @@ var initMap = function() {
 
     var infoWindow = new google.maps.InfoWindow;
 
-    // Iterate through all points in array, data, and create marker on map for each.
-    for( i=0; i<data.length; i++){
+    // Iterate through all points in array, DATA, and create marker on map for each.
+    for( i=0; i<DATA.length; i++){
         (function(){
             var marker = new google.maps.Marker({
-                name: data[i].name,
-                position: data[i].position,
-                label: data[i].label,
+                name: DATA[i].name,
+                position: DATA[i].position,
+                label: DATA[i].label,
                 map: map
             });
             markers.push(marker);
@@ -123,9 +123,9 @@ var populateInfoWindow = function(marker, infoWindow) {
         intent: 'match',
         ll: marker.getPosition().lat() + ',' + marker.getPosition().lng(),
         name: marker.name,
-        client_id: foursquareAuth.client_id,
-        client_secret: foursquareAuth.client_secret,
-        v: foursquareAuth.version,
+        client_id: FOURSQUAREAUTH.client_id,
+        client_secret: FOURSQUAREAUTH.client_secret,
+        v: FOURSQUAREAUTH.version,
     };
 
     $.ajax({
@@ -168,13 +168,13 @@ var getHeatMap = function() {
         radius: '3500',
         categoryId: '',
         limit: '50',
-        client_id: foursquareAuth.client_id,
-        client_secret: foursquareAuth.client_secret,
-        v: foursquareAuth.version,
+        client_id: FOURSQUAREAUTH.client_id,
+        client_secret: FOURSQUAREAUTH.client_secret,
+        v: FOURSQUAREAUTH.version,
     };
 
     // Foursquare categories:
-    foursquareCategories = [
+    DATAFOURSQUARECATEGORIES = [
         {name: 'coffee shop', id: '4bf58dd8d48988d1e0931735'},
         {name: 'climbing gym', id: '4bf58dd8d48988d1e0931735'},
         {name: 'yoga studio', id: '4bf58dd8d48988d102941735'},
@@ -183,10 +183,10 @@ var getHeatMap = function() {
         {name: 'book store', id: '4bf58dd8d48988d114951735'},
     ];
 
-    // Loop through all foursquareCategories to make API call on each.
+    // Loop through all DATAFOURSQUARECATEGORIES to make API call on each.
     // This is a work around to the 50 venue limit set by FourSquare on each API call.
-    for(i=0; i<foursquareCategories.length;i++){
-        foursquareCategoryParam.categoryId = foursquareCategories[i].id;
+    for(i=0; i<DATAFOURSQUARECATEGORIES.length;i++){
+        foursquareCategoryParam.categoryId = DATAFOURSQUARECATEGORIES[i].id;
         
         $.ajax({
             url: 'https://api.foursquare.com/v2/venues/search?',
@@ -244,7 +244,7 @@ var ViewModel = function() {
     this.query = ko.observable('');
     this.dropdown = ko.observable('');
 
-    data.forEach(function(dataPoint) {
+    DATA.forEach(function(dataPoint) {
         let myPOI = new PointOfInterest(dataPoint);
         self.points.push(myPOI);
     });
