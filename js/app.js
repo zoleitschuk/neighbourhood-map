@@ -208,8 +208,8 @@ var getHeatMap = function() {
             heatmap.set('radius', heatmap.get('radius') ? null : 15);
         })
         .fail(function(){
-            // Log to console if heatmap errro occurs.
-            console.log('heatmap connection failed');
+            // Log alert if heatmap errro occurs.
+            alert('Heatmap is currently unavailable. Please try again later.');
         });
     }   // end api query loop
 }
