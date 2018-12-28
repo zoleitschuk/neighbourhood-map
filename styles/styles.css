@@ -9,6 +9,10 @@ hr {
     margin: 0px;
 }
 
+.header-img {
+    width: 30%;
+}
+
 .searchbar {
     margin: 2.5%;
     width: 95%;
@@ -55,6 +59,11 @@ hr {
 
 @media only screen and (min-width: 600px){
     /* tablet and larger styling */
+
+    .header-img {
+        width: 15%;
+    }
+
     #sidebar {
         display: block;
     }

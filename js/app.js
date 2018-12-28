@@ -1,4 +1,4 @@
-let viewModel;
+var viewModel;
 
 var DATA = [
     {
@@ -38,22 +38,22 @@ var map, heatmap;
 var markers = [];
 
 // Define global params for foursquare API authentication.
-let FOURSQUAREAUTH = {
+var FOURSQUAREAUTH = {
     client_id: '53YSEWRJUR3R0MVJ4AB1Y54Y1UEBQLYVWIVMVQC1PN2G2M3A',
     client_secret: 'BT2FCLFH0QBC1S20UU3L1NI1SFL04RJ1SWQ4WBXJFLWG432I',
     version: '20180113',
-}
+};
 
 // Set map zoom level.
 // Future improvement: use points lat-lng to determine appropriate zoom level.
 var setZoom = function() {
-    let zoom = 13;
+    var zoom = 13;
     return zoom;
-}
+};
 
 // Find center lat-lng based off of points locations.
 var findCenter = function() {
-    let self = this;
+    var self = this;
 
     this.sumLat = 0;
     this.sumLng = 0;
@@ -71,7 +71,7 @@ var findCenter = function() {
         lat: this.sumLat / this.pointsCount,
         lng: this.sumLng / this.pointsCount
     };
-}
+};
 
 var initMap = function() {
 
@@ -80,10 +80,10 @@ var initMap = function() {
         center: findCenter()
     });
 
-    var infoWindow = new google.maps.InfoWindow;
+    var infoWindow = new google.maps.InfoWindow();
 
     // Iterate through all points in array, DATA, and create marker on map for each.
-    for( i=0; i<DATA.length; i++){
+    for( var i=0; i<DATA.length; i++){
         (function(){
             var marker = new google.maps.Marker({
                 name: DATA[i].name,
@@ -97,14 +97,14 @@ var initMap = function() {
                 return function() {
                     populateInfoWindow(marker, infoWindow);
                     toggleMarkerBounce(marker);
-                }
+                };
             })(marker));
 
         })(i);
     }
     // Apply heatmap to outline areas of interest to the map.
     getHeatMap();
-}
+};
 
 // Error handler for google maps.
 var mapErrorHandler = function() { 
@@ -114,12 +114,12 @@ var mapErrorHandler = function() {
 // Handle key errors for google maps
 function gm_authFailure() { 
     alert("Something went wrong with your Google Maps authentication. Please check that your API key is correct, and contact the sites administrator.");
-};
+}
 
 // Use FourSquare API to populate name and address information of provided google maps marker.
 // https://developer.foursquare.com/docs/api/venues/search
 var populateInfoWindow = function(marker, infoWindow) {
-    foursquareDetailParam = {
+    var foursquareDetailParam = {
         intent: 'match',
         ll: marker.getPosition().lat() + ',' + marker.getPosition().lng(),
         name: marker.name,
@@ -134,36 +134,38 @@ var populateInfoWindow = function(marker, infoWindow) {
         data: foursquareDetailParam,
     })
     .done(function(data){
-        locationDetails = getVenueInfoContent(data.response.venues[0]);
+        var locationDetails = getVenueInfoContent(data.response.venues[0]);
         infoWindow.setContent(locationDetails);
         infoWindow.open(map, marker);
     })
     .fail(function() {
-        locationDetails = '<div>Connection to Foursquare API failed. Please try again later.</div>';
+        var locationDetails = '<div>Connection to Foursquare API failed. Please try again later.</div>';
         infoWindow.setContent(locationDetails);
         infoWindow.open(map, marker);
     });
-}
+};
 
 // Helper function to build content string for marker infoWindow given a FourSquare venue.
 var getVenueInfoContent = function(venue){
-    var name = venue.name ? '<div>' + venue.name + '</div>' : '<div>Name of Location not available</div>';
+    var name = venue.name ? '<div><a href=' + 'http://foursquare.com/v/' + venue.id + '>' + venue.name + '</a></div>' : '<div>Name of Location not available</div>';
     var addressLine1 = venue.location.formattedAddress[0] ? '<div>' + venue.location.formattedAddress[0] + '</div>' : '';
     var addressLine2 = venue.location.formattedAddress[1] ? '<div>' + venue.location.formattedAddress[1] + '</div>' : '';
     var addressLine3 = venue.location.formattedAddress[2] ? '<div>' + venue.location.formattedAddress[2] + '</div>' : '';
     var content = name + addressLine1 + addressLine2 + addressLine3;
 
+    console.log(venue);
+
     return content;
-}
+};
 
 // Use FourSquare API to retreive a list of locations of interest and use those points
 // to build a heatmap to represent areas of interest .
 // https://developer.foursquare.com/docs/api/venues/search
 // https://developers.google.com/maps/documentation/javascript/examples/layer-heatmap
 var getHeatMap = function() {
-    let heatMapData = [];
+    var heatMapData = [];
 
-    foursquareCategoryParam = {
+    var foursquareCategoryParam = {
         mode: 'url',
         intent: 'browse',
         ll: findCenter().lat + ',' + findCenter().lng,
@@ -176,7 +178,7 @@ var getHeatMap = function() {
     };
 
     // Foursquare categories:
-    DATAFOURSQUARECATEGORIES = [
+    var DATAFOURSQUARECATEGORIES = [
         {name: 'coffee shop', id: '4bf58dd8d48988d1e0931735'},
         {name: 'climbing gym', id: '4bf58dd8d48988d1e0931735'},
         {name: 'yoga studio', id: '4bf58dd8d48988d102941735'},
@@ -187,7 +189,7 @@ var getHeatMap = function() {
 
     // Loop through all DATAFOURSQUARECATEGORIES to make API call on each.
     // This is a work around to the 50 venue limit set by FourSquare on each API call.
-    for(i=0; i<DATAFOURSQUARECATEGORIES.length;i++){
+    for(var i=0; i<DATAFOURSQUARECATEGORIES.length;i++){
         foursquareCategoryParam.categoryId = DATAFOURSQUARECATEGORIES[i].id;
         
         $.ajax({
@@ -197,10 +199,10 @@ var getHeatMap = function() {
         })
         .done(function(data) {
             data.response.venues.forEach(venue => {
-                let hotSpotLat = venue.location.lat;
-                let hotSpotLng = venue.location.lng;
-                let weight = venue.rating || 1;
-                let hotSpot = {
+                var hotSpotLat = venue.location.lat;
+                var hotSpotLng = venue.location.lng;
+                var weight = venue.rating || 1;
+                var hotSpot = {
                     location: new google.maps.LatLng(hotSpotLat, hotSpotLng),
                     weight: weight,
                 };
@@ -219,23 +221,23 @@ var getHeatMap = function() {
             alert('Heatmap is currently unavailable. Please try again later.');
         });
     }   // end api query loop
-}
+};
 
 // Animate marker to bounce for specified amount of time.
 var toggleMarkerBounce = function(marker) {
-    let currentMarker = marker;
+    var currentMarker = marker;
     currentMarker.setAnimation(google.maps.Animation.BOUNCE);
     window.setTimeout(function(){
         currentMarker.setAnimation(null);
     }, 1000);
-}
+};
 
 // Define model for Point of Interest.
 var PointOfInterest = function(dataPoint) {
     this.label = dataPoint.label;
     this.name = dataPoint.name;
     this.show = ko.observable(true);
-}
+};
 
 
 // Define View Model.
@@ -247,14 +249,14 @@ var ViewModel = function() {
     this.dropdown = ko.observable('');
 
     DATA.forEach(function(dataPoint) {
-        let myPOI = new PointOfInterest(dataPoint);
+        var myPOI = new PointOfInterest(dataPoint);
         self.points.push(myPOI);
     });
 
     this.filteredPoints = ko.computed(function() {
         // If dropdown has value, use its value as the filter, otherwise use the value query.
-        let filter = self.dropdown() ? self.dropdown().name.toLowerCase() : self.query().toLowerCase();
-        for(i=0;i<self.points().length;i++){
+        var filter = self.dropdown() ? self.dropdown().name.toLowerCase() : self.query().toLowerCase();
+        for(var i=0;i<self.points().length;i++){
             if(self.points()[i].name.toLowerCase().indexOf(filter)>-1) {
                 self.points()[i].show(true);
                 if(self.points()[i].marker){
