@@ -99,7 +99,10 @@ var initMap = function() {
                     toggleMarkerBounce(marker);
                 };
             })(marker));
-
+            // Close infoWindow when filter when marker visibility changes.
+            google.maps.event.addListener(marker, 'visible_changed',(function() {
+                infoWindow.close();
+            }));
         })(i);
     }
     // Apply heatmap to outline areas of interest to the map.
@@ -152,8 +155,6 @@ var getVenueInfoContent = function(venue){
     var addressLine2 = venue.location.formattedAddress[1] ? '<div>' + venue.location.formattedAddress[1] + '</div>' : '';
     var addressLine3 = venue.location.formattedAddress[2] ? '<div>' + venue.location.formattedAddress[2] + '</div>' : '';
     var content = name + addressLine1 + addressLine2 + addressLine3;
-
-    console.log(venue);
 
     return content;
 };
