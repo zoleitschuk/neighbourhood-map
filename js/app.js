@@ -147,10 +147,12 @@ var populateInfoWindow = function(marker, infoWindow) {
 
 // Helper function to build content string for marker infoWindow given a FourSquare venue.
 var getVenueInfoContent = function(venue){
-    var content = '<div>' + venue.name + '</div>' +
-        '<div>' + venue.location.formattedAddress[0] + '</div>' +
-        '<div>' + venue.location.formattedAddress[1] + '</div>' +
-        '<div>' + venue.location.formattedAddress[2] + '</div>';
+    var name = venue.name ? '<div>' + venue.name + '</div>' : '<div>Name of Location not available</div>';
+    var addressLine1 = venue.location.formattedAddress[0] ? '<div>' + venue.location.formattedAddress[0] + '</div>' : '';
+    var addressLine2 = venue.location.formattedAddress[1] ? '<div>' + venue.location.formattedAddress[1] + '</div>' : '';
+    var addressLine3 = venue.location.formattedAddress[2] ? '<div>' + venue.location.formattedAddress[2] + '</div>' : '';
+    var content = name + addressLine1 + addressLine2 + addressLine3;
+
     return content;
 }
 
