@@ -106,6 +106,11 @@ var initMap = function() {
     getHeatMap();
 }
 
+// Handle google maps authenticaiton errors
+function gm_authFailure() { 
+    alert("Google Maps is currently unavailable. Please try again later.");
+};
+
 // Use FourSquare API to populate name and address information of provided google maps marker.
 // https://developer.foursquare.com/docs/api/venues/search
 var populateInfoWindow = function(marker, infoWindow) {
