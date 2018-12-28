@@ -106,9 +106,14 @@ var initMap = function() {
     getHeatMap();
 }
 
-// Handle google maps authenticaiton errors
-function gm_authFailure() { 
+// Error handler for google maps.
+var mapErrorHandler = function() { 
     alert("Google Maps is currently unavailable. Please try again later.");
+};
+
+// Handle key errors for google maps
+function gm_authFailure() { 
+    alert("Something went wrong with your Google Maps authentication. Please check that your API key is correct, and contact the sites administrator.");
 };
 
 // Use FourSquare API to populate name and address information of provided google maps marker.
